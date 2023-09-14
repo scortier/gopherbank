@@ -8,23 +8,37 @@ INSERT INTO accounts (
 )
 RETURNING *;
 
--- name: GetAccounts :one
+-- name: GetAccount :one
 SELECT * FROM accounts
 WHERE id = $1 LIMIT 1;
 
--- many stands for multiple rows
+-- name: GetAccountForUpdate :one
+SELECT * FROM accounts
+WHERE id = $1 LIMIT 1
+FOR NO KEY UPDATE;
+
 -- name: ListAccounts :many
 SELECT * FROM accounts
 ORDER BY id
-LIMIT $1 --pagination, as data can be huge
-OFFSET $2; -- no of records to skip
+LIMIT $1 
+OFFSET $2; 
 
--- exec stands for execute
--- name: UpdateAccounts :exec
+-- name: UpdateAccount :exec
 UPDATE accounts
 SET balance = $2
 WHERE id = $1;
 
--- name: DeleteAccounts :exec
+-- name: AddAccountBalance :one
+UPDATE accounts
+SET balance = balance + sqlc.arg(amount)
+WHERE id = sqlc.arg(id)
+RETURNING *;
+
+-- name: DeleteAccount :exec
 DELETE FROM accounts
 WHERE id = $1;
+
+-- many stands for multiple rows
+-- exec stands for execute
+-- LIMIT: pagination, as data can be huge
+-- OFFSET: no of records to skip
