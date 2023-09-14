@@ -80,4 +80,12 @@ sql:
         out: "./db/sqlc"
 
 ```
+
 - use create, get, update queries in query.sql and `make sqlc` to create corresponding code files.
+
+# DB Transaction
+
+- Each Query can do only 1 operation on 1 specific table
+- storing query inside store is called composition, it is preferred way to extend struct functionality in go instead of inheritance.
+- All individual function provided by queries will be available to store and we can support tx by adding more func to that new struct(Store)
+-
