@@ -102,25 +102,49 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 			return err
 		}
 
-		// to update the account balance, we need to get the updated account from the db
-		result.FromAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
-			Amount: -arg.Amount, // negative amount, as we are deducting the amount
-			ID:     arg.FromAccountID,
-		}) // update account balance
-		if err != nil {
-			return err
-		}
-
-		result.ToAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
-			Amount: +arg.Amount, // positive amount, as we are adding the amount
-			ID:     arg.ToAccountID,
-		}) // update account balance
-		if err != nil {
-			return err
+		if arg.FromAccountID < arg.ToAccountID {
+			// fromAcc is updated first, then toAcc 
+			result.FromAccount, result.ToAccount, err = addMoney(ctx, q, -arg.Amount, arg.FromAccountID, +arg.Amount, arg.ToAccountID)
+			if err != nil {
+				return err
+			}
+		} else {
+			// toAcc is updated first, then fromAcc
+			result.ToAccount, result.FromAccount, err = addMoney(ctx, q, +arg.Amount, arg.ToAccountID, -arg.Amount, arg.FromAccountID)
+			if err != nil {
+				return err
+			}
 		}
 
 		return nil
 	})
 
 	return result, err
+}
+
+func addMoney(
+	ctx context.Context,
+	q *Queries,
+	amount1 int64,
+	id1 int64,
+	amount2 int64,
+	id2 int64,
+) (acc1 Account, acc2 Account, err error) {
+	acc1, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
+		Amount: amount1,
+		ID:     id1,
+	})
+	if err != nil {
+		return
+	}
+
+	acc2, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
+		Amount: amount2,
+		ID:     id2,
+	})
+	if err != nil {
+		return
+	}
+
+	return
 }

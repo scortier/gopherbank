@@ -166,3 +166,26 @@ RETURNING *;
 
 // SET balance = balance + $2 is also fine. but we want to update struct field to new value name , here it will be amount that's why added sqlc.arg(amount)
 ```
+
+- now also it will give deadlock issue, when two tx are happening simultaneously from 1->2 and form 2->1.
+  ![Alt text](image-4.png)
+- to resolve it just go with smaller -> larger id order in tx.
+- update the code accordingly
+
+```
+UPDATED CODE. 
+if arg.FromAccountID < arg.ToAccountID {
+			// fromAcc is updated first, then toAcc
+			result.FromAccount, result.ToAccount, err = addMoney(ctx, q, -arg.Amount, arg.FromAccountID, +arg.Amount, arg.ToAccountID)
+			if err != nil {
+				return err
+			}
+		} else {
+			// toAcc is updated first, then fromAcc
+			result.ToAccount, result.FromAccount, err = addMoney(ctx, q, +arg.Amount, arg.ToAccountID, -arg.Amount, arg.FromAccountID)
+			if err != nil {
+				return err
+			}
+		}
+
+```
