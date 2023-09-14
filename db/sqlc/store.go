@@ -103,6 +103,21 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 		}
 
 		// to update the account balance, we need to get the updated account from the db
+		result.FromAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
+			Amount: -arg.Amount, // negative amount, as we are deducting the amount
+			ID:     arg.FromAccountID,
+		}) // update account balance
+		if err != nil {
+			return err
+		}
+
+		result.ToAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
+			Amount: +arg.Amount, // positive amount, as we are adding the amount
+			ID:     arg.ToAccountID,
+		}) // update account balance
+		if err != nil {
+			return err
+		}
 
 		return nil
 	})

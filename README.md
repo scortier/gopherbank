@@ -88,4 +88,81 @@ sql:
 - Each Query can do only 1 operation on 1 specific table
 - storing query inside store is called composition, it is preferred way to extend struct functionality in go instead of inheritance.
 - All individual function provided by queries will be available to store and we can support tx by adding more func to that new struct(Store)
--
+- Issue : after one trans, fromAcc balance was not updated immedialtely which was leading issue in simultaneous tx,
+  Sol: Add `For UPDATE` clause at the end of GetList
+
+```
+-- name: GetAccountForUpdate :one
+SELECT * FROM accounts
+WHERE id = $1 LIMIT 1
+FOR NO KEY UPDATE;
+```
+
+- After above changes, that problem is resolved but now deadlock issue will arrive
+  ![For debugging deadlock process](image-1.png)
+- so the deadlock happends from `SELECT statement`: https://wiki.postgresql.org/wiki/Lock_Monitoring
+  ![Alt text](image.png)
+- ![Alt text](image-2.png)
+
+- the only conn between account and transfer schema is foreign key
+  - ALTER TABLE "transfers" ADD FOREIGN KEY ("to_account_id") REFERENCES "accounts" ("id");
+  - from_acc_id and to_acc_id of transfer table are referring to the id column of accounts table. So any affect on account id will ffect the foreign key constraint.
+  - That'swhy when we select an account for update. it needs to acquire a lock to prevent conflict and ensure onsistency in the data.
+  - To check again just run , create entry for acc 1 and 2 and select acc1 for update in tx1, you will geta deadlock,
+    ![Alt text](image-3.png)  
+    becoz both tx1 and tx2 has to wait for each other.
+- HOW TO FIX IT ?
+
+  - Remove foreign key
+  - update db schema , just by not changing id while updating. Tell postgres to udpate acc but u will not touch its primary key. hence no tx lock , so no deadlock.
+
+```
+  -- name: GetAccountForUpdate :one
+  SELECT * FROM accounts
+  WHERE id = $1 LIMIT 1
+  FOR UPDATE;
+
+- Below NO KEY is added in last line.
+-- name: GetAccountForUpdate :one
+SELECT \* FROM accounts
+WHERE id = $1 LIMIT 1
+FOR NO KEY UPDATE;
+
+```
+
+- To avoid duplication of code of fetchign and updating balance in both accounts
+
+```
+		fromAcc, err := q.GetAccountForUpdate(ctx, arg.FromAccountID) // get account
+		if err != nil {
+			return err
+		}
+
+		result.FromAccount, err = q.UpdateAccount(ctx, UpdateAccountParams{
+			ID:      arg.FromAccountID,
+			Balance: fromAcc.Balance - arg.Amount,
+		}) // update account
+		if err != nil {
+			return err
+		}
+```
+
+- we can simplify this by adding the update query of account
+
+```
+FROM:
+-- name: UpdateAccount :one
+UPDATE accounts
+SET balance = $2
+WHERE id = $1
+RETURNING *;
+
+TO:
+-- name: AddAccountBalance :one
+UPDATE accounts
+SET balance = balance + sqlc.arg(amount)
+WHERE id = sqlc.arg(id)
+RETURNING *;
+
+// SET balance = balance + $2 is also fine. but we want to update struct field to new value name , here it will be amount that's why added sqlc.arg(amount)
+```
