@@ -16,6 +16,10 @@ migratedown:
 sqlc:
 	sqlc generate
 
+# to run unit test in complete project
+test:
+	go test -v -cover ./...
+
 # .PHONY is a way to ensure that Make knows when a target is not meant to produce a file but 
 # rather execute specific commands or recipes.
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test
