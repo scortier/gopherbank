@@ -62,3 +62,22 @@ Type "help" for help.
 
 gopherbank=# \q
 ```
+
+# Generate Golang code from SQLC
+
+- create sqlc.yaml
+- use this : https://docs.sqlc.dev/en/v1.21.0/tutorials/getting-started-postgresql.html
+
+```
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "./db/query/"
+    schema: "./db/migration/"
+    gen:
+      go:
+        package: "db"
+        out: "./db/sqlc"
+
+```
+- use create, get, update queries in query.sql and `make sqlc` to create corresponding code files.
