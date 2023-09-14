@@ -21,4 +21,4 @@
 go.work
 
 # Extra files
-./db/doc/info.md
+doc/Info.md
