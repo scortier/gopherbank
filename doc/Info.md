@@ -34,3 +34,16 @@
   And so on...
 
 - List Account API is not returning any response but showing response, check it afterwards.
+
+# 12: Load config using viper
+
+- why env vars ?
+
+  - Easily override the deafult configuration when deploy with docker containers.
+
+- why viper ?
+  - find, load, unmarshal config file.: JSON,TOML,YAML,ENV,INI
+  - Read config from env var or flags.: override existing val, set default values
+  - Read config from remote system.: Etcd, Consul
+  - Live watching and writing config file: Reread changed file, save any modifications.
+  
