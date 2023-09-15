@@ -20,6 +20,9 @@ sqlc:
 test:
 	go test -v -cover ./...
 
+server:
+	go run main.go
+
 # .PHONY is a way to ensure that Make knows when a target is not meant to produce a file but 
 # rather execute specific commands or recipes.
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test server
