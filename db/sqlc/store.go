@@ -76,6 +76,7 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 	// from a callback func. becoz the callback func itself doesn't know the exact type of the result, it should return.
 	err := store.execTx(ctx, func(q *Queries) error { // execute the transaction
 		var err error
+
 		result.Transfer, err = q.CreateTransfer(ctx, CreateTransferParams{
 			FromAccountID: arg.FromAccountID,
 			ToAccountID:   arg.ToAccountID,
