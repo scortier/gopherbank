@@ -3,16 +3,18 @@ package api
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lib/pq"
 	db "github.com/scortier/gopherbank/db/sqlc"
 )
 
 // CreateAccountRequest contains the input parameters for account creation
 type CreateAccountRequest struct {
 	Owner    string `json:"owner" binding:"required"`
-	Currency string `json:"currency" binding:"required,oneof=USD EUR"`
+	Currency string `json:"currency" binding:"required,currency"`
 }
 
 // createAccount is a handler function that creates a new account
@@ -31,6 +33,12 @@ func (server *Server) createAccount(ctx *gin.Context) {
 		Currency: req.Currency,
 	})
 	if err != nil { // if error
+		if pqErr, ok := err.(*pq.Error); ok {
+			switch pqErr.Code.Name() {
+			case "unique_violation", "foreign_key_violation":
+				ctx.JSON(http.StatusForbidden, errorResponse(err)) // return error response
+				return
+		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err)) // return error response
 		return
 	}

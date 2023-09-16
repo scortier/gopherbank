@@ -10,8 +10,15 @@ dropdb:
 migrateup:
 	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/gopherbank?sslmode=disable" -verbose up
 
+migrateup_user:
+	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/gopherbank?sslmode=disable" -verbose up 1
+
 migratedown:
 	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/gopherbank?sslmode=disable" -verbose down
+
+migratedown_user:
+	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/gopherbank?sslmode=disable" -verbose down 1
+
 
 sqlc:
 	sqlc generate
@@ -25,4 +32,4 @@ server:
 
 # .PHONY is a way to ensure that Make knows when a target is not meant to produce a file but 
 # rather execute specific commands or recipes.
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test server
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test server migrateup_user migratedown_user

@@ -46,4 +46,19 @@
   - Read config from env var or flags.: override existing val, set default values
   - Read config from remote system.: Etcd, Consul
   - Live watching and writing config file: Reread changed file, save any modifications.
-  
+
+# 14 Custom Param validator in GO
+
+- used : "github.com/go-playground/validator/v10", for validating
+- after checking tx api through postman, check db tx in tableplus, by checking tx details, fromAcc and toAcc money updation, where tx is recorded in db.
+
+# 15 Add user table with unique and foreign key constraints in postgres
+
+- never store pass in db, store a hash pass
+- `migrate create -ext sql -dir db/migration -seq add_users` to create new dbmigration as in prod code, updating existing one is not feasible approach as its deployed while changeing it can break thing instead create new version whenever something you change with db.
+- first do migrate down then migrate up as exisitng data will give error for foreign key, version of 2 will also be dirty as true (for checking purpose).
+- ![Alt text](image-1.png)
+- TO check foreign key for owner field : Go to TabelPlus in account table, click INFO button
+  ![Alt text](image-3.png)
+
+-
