@@ -3,7 +3,6 @@ package api
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -38,7 +37,9 @@ func (server *Server) createAccount(ctx *gin.Context) {
 			case "unique_violation", "foreign_key_violation":
 				ctx.JSON(http.StatusForbidden, errorResponse(err)) // return error response
 				return
+			}
 		}
+
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err)) // return error response
 		return
 	}

@@ -11,9 +11,12 @@ import (
 // createRandomAccount creates a random account for testing.
 // It generates random account parameters, creates an account, and verifies the results.
 func createRandomUser(t *testing.T) User {
+	hashedPass, err := util.HashedPassword(util.RandomHashedPassword())
+	require.NoError(t, err, "Error generating password")
+
 	arg := CreateUserParams{
 		Username:       util.RandomOwner(),
-		HashedPassword: "secret",
+		HashedPassword: hashedPass,
 		FullName:       util.RandomOwner(),
 		Email:          util.RandomEmail(),
 	}
