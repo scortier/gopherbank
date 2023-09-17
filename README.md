@@ -4,12 +4,14 @@
 
 Welcome to GopherBank, a comprehensive backend web service developed in Golang. This project provides APIs for managing bank accounts, recording balance changes, and facilitating money transfers between accounts.
 
+Note: Development is in progress...
+
 **Tech Stack and Libraries Used:**
 
 - **Programming Language**: Golang
 - **Web Framework**: Gin
 - **Database**: PostgreSQL
-- **Database Migration Tool**: [golang-migrate](https://github.com/golang-migrate/migrate/tree/master/cmd/migrate)
+- **Database Migration Tool**: [golang-migrate](https://github.com/golang-migrate/migrate)
 - **Containerization**: Docker
 - **Testing**: Unit, Mocking
 - **Token-Based Authentication**: PASETO and JWT
@@ -17,6 +19,7 @@ Welcome to GopherBank, a comprehensive backend web service developed in Golang. 
 - **Version Control**: Git
 - **Continuous Integration**: GitHub Actions
 - **Database Visualization**: TablePlus
+- **Database Compiler**: [Sqlc](https://github.com/sqlc-dev/sqlc)
 
 ## Features
 
