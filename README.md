@@ -1,5 +1,7 @@
 # GopherBank: Backend Web Service for Banking Operations
 
+## Introduction
+
 Welcome to GopherBank, a comprehensive backend web service developed in Golang. This project provides APIs for managing bank accounts, recording balance changes, and facilitating money transfers between accounts.
 
 **Tech Stack and Libraries Used:**
@@ -7,67 +9,64 @@ Welcome to GopherBank, a comprehensive backend web service developed in Golang. 
 - **Programming Language**: Golang
 - **Web Framework**: Gin
 - **Database**: PostgreSQL
-- **Database Migration Tool**: golang-migrate
+- **Database Migration Tool**: [golang-migrate](https://github.com/golang-migrate/migrate/tree/master/cmd/migrate)
 - **Containerization**: Docker
 - **Testing**: Unit, Mocking
 - **Token-Based Authentication**: PASETO and JWT
 - **Password Hashing**: Bcrypt
 - **Version Control**: Git
 - **Continuous Integration**: GitHub Actions
-
-## Introduction
-
-GopherBank is a backend web service developed in Golang, designed to provide functionalities for a simple banking application.
+- **Database Visualization**: TablePlus
 
 ## Features
 
-### Working with Database [Postgres]
+### Database Management
 
-This feature set focuses on working with a PostgreSQL database and covers various aspects of database management and integration.
+- **Schema Design**: Design and generate SQL schema using dbdiagram.io.
+- **Containerized Database Setup**: Set up a database using Docker and Postgres for efficient schema creation.
+- **Migration Handling**: Write and run migration scripts in Golang for seamless database updates.
+- **CRUD Code Generation**: Generate CRUD Golang code from SQL and compare different approaches.
+- **Transaction Management**: Implement clean and effective database transactions in Golang.
+- **Deadlock Handling**: Address deadlock scenarios and implement strategies to avoid them.
+- **Transaction Isolation Understanding**: Gain a deep understanding of transaction isolation levels and read phenomena in databases.
 
-- **Working with Database Schema**: Design DB schema and generate SQL code with dbdiagram.io.
-- **Database Setup with Docker and Postgres**: Install & use Docker + Postgres + TablePlus to create DB schema.
-- **Database Migration in Golang**: How to write & run database migration in Golang.
-- **CRUD Golang Code Generation**: Generate CRUD Golang code from SQL | Compare db/sql, gorm, sqlx & sqlc.
-- **Unit Testing for Database CRUD**: Write unit tests for database CRUD with random data in Golang.
-- **Database Transactions in Golang**: A clean way to implement database transaction in Golang.
-- **Handling DB Transaction Locks**: DB transaction lock & How to handle deadlock in Golang.
-- **Avoiding Deadlocks**: How to avoid deadlock in DB transaction? Queries order matters!
-- **Transaction Isolation Levels**: Deeply understand transaction isolation levels & read phenomena in MySQL & PostgreSQL.
-- **Automated Testing with GitHub Actions**: Setup GitHub Actions for Golang + Postgres to run automated tests.
+### API Development
 
-### Building RESTful HTTP JSON API [Gin]
+- **RESTful API Implementation**: Develop a RESTful HTTP API using Gin in Go.
+- **Configuration Management**: Load configuration from files and environment variables using Viper.
+- **Money Transfer API**: Implement the money transfer API with a custom parameter validator.
+- **User Management Features**: Add users table with unique and foreign key constraints.
+- **Error Handling**: Implement robust error handling mechanisms for database errors.
+- **Password Security**: Enhance security by securely storing passwords using Bcrypt.
+- **Token-Based Authentication**: Explore the advantages of PASETO over JWT for secure token-based authentication.
+- **Token Management and Verification**: Learn to create and verify JWT & PASETO tokens effectively.
+- **User Authentication API**: Implement a login user API that returns PASETO or JWT access tokens.
+- **Middleware and Authorization**: Implement authentication middleware and define authorization rules effectively.
 
-This feature set dives into building a RESTful HTTP JSON API using the Gin framework in Golang.
+### Testing
 
-- **Implementing RESTful HTTP API**: Implement RESTful HTTP API in Go using Gin.
-- **Configuration Handling**: Load config from file & environment variables in Go with Viper.
-- **Mocking for Testing**: Mock DB for testing HTTP API in Go and achieve 100% coverage.
-- **Money Transfer API**: Implement transfer money API with a custom params validator.
-- **User Management**: Add users table with unique & foreign key constraints in PostgreSQL.
-- **Error Handling**: How to handle DB errors in Golang correctly.
-- **Password Security**: How to securely store passwords? Hash password in Go with Bcrypt!
-- **Enhanced Unit Testing**: How to write stronger unit tests with a custom gomock matcher.
-- **Token-Based Authentication**: Why PASETO is better than JWT for token-based authentication?
-- **Token Creation and Verification**: How to create and verify JWT & PASETO token in Golang.
-- **User Authentication API**: Implement login user API that returns PASETO or JWT access token in Go.
-- **Middleware and Authorization**: Implement authentication middleware and authorization rules in Golang using Gin.
-
-<!-- ## Database Schema
-
-For details about the database schema, refer to [Database Schema](docs/database-schema.md).
-
-## RESTful HTTP JSON API
-
-For details about the RESTful HTTP JSON API, refer to [API Documentation](docs/api-documentation.md).
-
-## Usage
-
-For information on how to use GopherBank, refer to the [Usage Guide](docs/usage.md).
+- **Unit Testing**: Write comprehensive unit tests for CRUD operations and APIs in Golang.
+- **Effective Mocking**: Utilize mocking techniques for comprehensive API testing in Go.
 
 ## Contributing
 
-We welcome contributions! See the [Contribution Guidelines](CONTRIBUTING.md) for details. -->
+We welcome contributions to GopherBank! If you'd like to contribute, please follow these steps:
+
+1. Fork the repository.
+2. Clone the forked repository to your local machine.
+3. Create a new branch for your feature: `git checkout -b feature-name`.
+4. Make the necessary changes and commit them: `git commit -m 'Add some feature'`.
+5. Push to the branch: `git push origin feature-name`.
+6. Submit a pull request to the `main` branch of the original repository.
+
+<!-- For more details, see our [Contribution Guidelines](CONTRIBUTING.md). -->
+
+## Questions and Contact
+
+If you have any questions or need further assistance, please feel free to reach out:
+
+- Email: onlytoaditya@example.com
+- Issue Tracker: [GitHub Issues](https://github.com/scortier/gopherbank/issues)
 
 ## License
 
