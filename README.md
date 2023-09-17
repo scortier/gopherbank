@@ -1,191 +1,76 @@
-# GopherBank
+# GopherBank: Backend Web Service for Banking Operations
 
-- Create and manage account
+Welcome to GopherBank, a comprehensive backend web service developed in Golang. This project provides APIs for managing bank accounts, recording balance changes, and facilitating money transfers between accounts.
 
-  - Owner, balance, currency
+**Tech Stack and Libraries Used:**
 
-- Record all balance changes
+- **Programming Language**: Golang
+- **Web Framework**: Gin
+- **Database**: PostgreSQL
+- **Database Migration Tool**: golang-migrate
+- **Containerization**: Docker
+- **Testing**: Unit, Mocking
+- **Token-Based Authentication**: PASETO and JWT
+- **Password Hashing**: Bcrypt
+- **Version Control**: Git
+- **Continuous Integration**: GitHub Actions
 
-  - Create an account entry for each change
+## Introduction
 
-- Money transfer transaction
-  - Perform money transfer between 2 accounts consistently within a transaction.
+GopherBank is a backend web service developed in Golang, designed to provide functionalities for a simple banking application.
 
-# Database Design
+## Features
 
-- Design a SQL DB schema using dbdiagram.io
-- Save it in PNG/PDF diagram
-- Generate code to create a schema in a target db engine: Postgres/MySQL/SQL Server
+### Working with Database [Postgres]
 
-# Install Docker & Postgres + TablePlus
+This feature set focuses on working with a PostgreSQL database and covers various aspects of database management and integration.
 
-- install docker desktop
-- find official docker postgress image
--
+- **Working with Database Schema**: Design DB schema and generate SQL code with dbdiagram.io.
+- **Database Setup with Docker and Postgres**: Install & use Docker + Postgres + TablePlus to create DB schema.
+- **Database Migration in Golang**: How to write & run database migration in Golang.
+- **CRUD Golang Code Generation**: Generate CRUD Golang code from SQL | Compare db/sql, gorm, sqlx & sqlc.
+- **Unit Testing for Database CRUD**: Write unit tests for database CRUD with random data in Golang.
+- **Database Transactions in Golang**: A clean way to implement database transaction in Golang.
+- **Handling DB Transaction Locks**: DB transaction lock & How to handle deadlock in Golang.
+- **Avoiding Deadlocks**: How to avoid deadlock in DB transaction? Queries order matters!
+- **Transaction Isolation Levels**: Deeply understand transaction isolation levels & read phenomena in MySQL & PostgreSQL.
+- **Automated Testing with GitHub Actions**: Setup GitHub Actions for Golang + Postgres to run automated tests.
 
-# DB Migration
+### Building RESTful HTTP JSON API [Gin]
 
-- golang-migrate library to write and read db migration : https://github.com/golang-migrate/migrate
-- Up and down script for migration schema , why ?
-- Up for any change in current migration
-- Down for revert changes in migration
+This feature set dives into building a RESTful HTTP JSON API using the Gin framework in Golang.
 
-```
-╭─scortier@Infinity ~
-╰─$ docker stop ps_name                                                           127 ↵
-ps_name
-╭─scortier@Infinity ~
-╰─$ docker start ps_name
-ps_name
-╭─scortier@Infinity ~
-╰─$ docker ps
-CONTAINER ID   IMAGE             COMMAND                  CREATED          STATUS         PORTS                    NAMES
-2d1f2ae8b71f   postgres:latest   "docker-entrypoint.s…"   57 minutes ago   Up 5 seconds   0.0.0.0:5432->5432/tcp   ps_name
-╭─scortier@Infinity ~
-╰─$ docker exec -it ps_name /bin/sh
-# psql gopherbank
-psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  database "gopherbank" does not exist
-# createdb --username=root --owner=root gopherbank
-# psql gopherbank
-psql (15.4 (Debian 15.4-1.pgdg120+1))
-Type "help" for help.
+- **Implementing RESTful HTTP API**: Implement RESTful HTTP API in Go using Gin.
+- **Configuration Handling**: Load config from file & environment variables in Go with Viper.
+- **Mocking for Testing**: Mock DB for testing HTTP API in Go and achieve 100% coverage.
+- **Money Transfer API**: Implement transfer money API with a custom params validator.
+- **User Management**: Add users table with unique & foreign key constraints in PostgreSQL.
+- **Error Handling**: How to handle DB errors in Golang correctly.
+- **Password Security**: How to securely store passwords? Hash password in Go with Bcrypt!
+- **Enhanced Unit Testing**: How to write stronger unit tests with a custom gomock matcher.
+- **Token-Based Authentication**: Why PASETO is better than JWT for token-based authentication?
+- **Token Creation and Verification**: How to create and verify JWT & PASETO token in Golang.
+- **User Authentication API**: Implement login user API that returns PASETO or JWT access token in Go.
+- **Middleware and Authorization**: Implement authentication middleware and authorization rules in Golang using Gin.
 
-gopherbank=# \q
-# dropdb gopherbank
-# exit
-╭─scortier@Infinity ~
-╰─$ docker exec -it ps_name createdb --username=root --owner=root gopherbank
-╭─scortier@Infinity ~
-╰─$ docker exec -it ps_name psql -U root  gopherbank
-psql (15.4 (Debian 15.4-1.pgdg120+1))
-Type "help" for help.
+<!-- ## Database Schema
 
-gopherbank=# \q
-```
+For details about the database schema, refer to [Database Schema](docs/database-schema.md).
 
-# Generate Golang code from SQLC
+## RESTful HTTP JSON API
 
-- create sqlc.yaml
-- use this : https://docs.sqlc.dev/en/v1.21.0/tutorials/getting-started-postgresql.html
+For details about the RESTful HTTP JSON API, refer to [API Documentation](docs/api-documentation.md).
 
-```
-version: "2"
-sql:
-  - engine: "postgresql"
-    queries: "./db/query/"
-    schema: "./db/migration/"
-    gen:
-      go:
-        package: "db"
-        out: "./db/sqlc"
+## Usage
 
-```
+For information on how to use GopherBank, refer to the [Usage Guide](docs/usage.md).
 
-- use create, get, update queries in query.sql and `make sqlc` to create corresponding code files.
+## Contributing
 
-# DB Transaction
+We welcome contributions! See the [Contribution Guidelines](CONTRIBUTING.md) for details. -->
 
-- Each Query can do only 1 operation on 1 specific table
-- storing query inside store is called composition, it is preferred way to extend struct functionality in go instead of inheritance.
-- All individual function provided by queries will be available to store and we can support tx by adding more func to that new struct(Store)
-- Issue : after one trans, fromAcc balance was not updated immedialtely which was leading issue in simultaneous tx,
-  Sol: Add `For UPDATE` clause at the end of GetList
+## License
 
-```
--- name: GetAccountForUpdate :one
-SELECT * FROM accounts
-WHERE id = $1 LIMIT 1
-FOR NO KEY UPDATE;
-```
+This project is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute the code as needed.
 
-- After above changes, that problem is resolved but now deadlock issue will arrive
-  ![For debugging deadlock process](image-1.png)
-- so the deadlock happends from `SELECT statement`: https://wiki.postgresql.org/wiki/Lock_Monitoring
-  ![Alt text](image.png)
-- ![Alt text](image-2.png)
-
-- the only conn between account and transfer schema is foreign key
-  - ALTER TABLE "transfers" ADD FOREIGN KEY ("to_account_id") REFERENCES "accounts" ("id");
-  - from_acc_id and to_acc_id of transfer table are referring to the id column of accounts table. So any affect on account id will ffect the foreign key constraint.
-  - That'swhy when we select an account for update. it needs to acquire a lock to prevent conflict and ensure onsistency in the data.
-  - To check again just run , create entry for acc 1 and 2 and select acc1 for update in tx1, you will geta deadlock,
-    ![Alt text](image-3.png)  
-    becoz both tx1 and tx2 has to wait for each other.
-- HOW TO FIX IT ?
-
-  - Remove foreign key
-  - update db schema , just by not changing id while updating. Tell postgres to udpate acc but u will not touch its primary key. hence no tx lock , so no deadlock.
-
-```
-  -- name: GetAccountForUpdate :one
-  SELECT * FROM accounts
-  WHERE id = $1 LIMIT 1
-  FOR UPDATE;
-
-- Below NO KEY is added in last line.
--- name: GetAccountForUpdate :one
-SELECT \* FROM accounts
-WHERE id = $1 LIMIT 1
-FOR NO KEY UPDATE;
-
-```
-
-- To avoid duplication of code of fetchign and updating balance in both accounts
-
-```
-		fromAcc, err := q.GetAccountForUpdate(ctx, arg.FromAccountID) // get account
-		if err != nil {
-			return err
-		}
-
-		result.FromAccount, err = q.UpdateAccount(ctx, UpdateAccountParams{
-			ID:      arg.FromAccountID,
-			Balance: fromAcc.Balance - arg.Amount,
-		}) // update account
-		if err != nil {
-			return err
-		}
-```
-
-- we can simplify this by adding the update query of account
-
-```
-FROM:
--- name: UpdateAccount :one
-UPDATE accounts
-SET balance = $2
-WHERE id = $1
-RETURNING *;
-
-TO:
--- name: AddAccountBalance :one
-UPDATE accounts
-SET balance = balance + sqlc.arg(amount)
-WHERE id = sqlc.arg(id)
-RETURNING *;
-
-// SET balance = balance + $2 is also fine. but we want to update struct field to new value name , here it will be amount that's why added sqlc.arg(amount)
-```
-
-- now also it will give deadlock issue, when two tx are happening simultaneously from 1->2 and form 2->1.
-  ![Alt text](image-4.png)
-- to resolve it just go with smaller -> larger id order in tx.
-- update the code accordingly
-
-```
-UPDATED CODE. 
-if arg.FromAccountID < arg.ToAccountID {
-			// fromAcc is updated first, then toAcc
-			result.FromAccount, result.ToAccount, err = addMoney(ctx, q, -arg.Amount, arg.FromAccountID, +arg.Amount, arg.ToAccountID)
-			if err != nil {
-				return err
-			}
-		} else {
-			// toAcc is updated first, then fromAcc
-			result.ToAccount, result.FromAccount, err = addMoney(ctx, q, +arg.Amount, arg.ToAccountID, -arg.Amount, arg.FromAccountID)
-			if err != nil {
-				return err
-			}
-		}
-
-```
+---
