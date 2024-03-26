@@ -68,7 +68,7 @@ We welcome contributions to GopherBank! If you'd like to contribute, please foll
 
 If you have any questions or need further assistance, please feel free to reach out:
 
-- Email: onlytoaditya@example.com
+- Email: onlytoaditya@gmail.com
 - Issue Tracker: [GitHub Issues](https://github.com/scortier/gopherbank/issues)
 
 ## License
